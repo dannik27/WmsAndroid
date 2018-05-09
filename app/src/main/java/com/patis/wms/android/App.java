@@ -34,7 +34,7 @@ public class App extends Application {
 
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.43.254:8090/")
+                    .baseUrl("http://kokoserver.me:8090/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
             backend = retrofit.create(BackendApi.class);

@@ -98,4 +98,23 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void setContent(Fragment fragment){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.content, fragment)
+                .addToBackStack(null)
+                .commit();
+
+    }
+
+    public void clearContent(){
+        for(Fragment fragment:getSupportFragmentManager().getFragments()){
+            if (fragment != null)
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
 }

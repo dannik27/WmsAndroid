@@ -2,10 +2,12 @@ package com.patis.wms.android.screen.new_request;
 
 
 import android.os.Bundle;
+import android.os.TestLooperManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.patis.wms.android.R;
 
@@ -14,6 +16,9 @@ import com.patis.wms.android.R;
  */
 public class NewRequestFragment extends Fragment {
 
+    private View root;
+
+    private TextView text;
 
     public NewRequestFragment() {
         // Required empty public constructor
@@ -24,7 +29,15 @@ public class NewRequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_request, container, false);
+        root = inflater.inflate(R.layout.fragment_new_request, container, false);
+
+        text = root.findViewById(R.id.text);
+
+        if(getArguments() != null){
+            text.setText(String.valueOf(getArguments().getInt("operationType")));
+        }
+
+        return root;
     }
 
 }

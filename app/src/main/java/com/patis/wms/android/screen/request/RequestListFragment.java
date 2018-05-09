@@ -10,11 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.patis.wms.android.App;
+import com.patis.wms.android.MainActivity;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.RequestDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
 import com.patis.wms.android.dto.create.RequestItemCreateDTO;
+import com.patis.wms.android.dto.entity.OperationType;
+import com.patis.wms.android.screen.new_request.NewRequestFragment;
 
 import java.util.List;
 
@@ -47,7 +51,8 @@ public class RequestListFragment extends Fragment {
         RequestListAdapter adapter = new RequestListAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setListener(request->{
-
+            Fragment fragment = new NewRequestFragment();
+            ((MainActivity) getActivity()).setContent(fragment);
         });
 
         App.getBackendApi().getRequests().enqueue(new Callback<List<RequestDTO>>() {
@@ -63,12 +68,24 @@ public class RequestListFragment extends Fragment {
             }
         });
 
+        FloatingActionButton fabIn = root.findViewById(R.id.menu_in);
+        FloatingActionButton fabOut = root.findViewById(R.id.menu_out);
+        FloatingActionButton fabOutIn = root.findViewById(R.id.menu_out_in);
 
-        RequestCreateDTO dto = new RequestCreateDTO();
-        dto.getItems().add(new RequestItemCreateDTO());
-        App.getBackendApi().send(dto);
+        fabIn.setOnClickListener(e-> newRequest(OperationType.IN));
+        fabOut.setOnClickListener(e-> newRequest(OperationType.OUT));
+        fabOutIn.setOnClickListener(e-> newRequest(OperationType.IN_OUT));
+
 
         return root;
+    }
+
+    void newRequest(OperationType operationType){
+        Fragment fragment = new NewRequestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("operationType", operationType.ordinal());
+        fragment.setArguments(bundle);
+        ((MainActivity) getActivity()).setContent(fragment);
     }
 
 }
