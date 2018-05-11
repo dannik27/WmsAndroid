@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.patis.wms.android.screen.new_request.NewRequestFragment;
 import com.patis.wms.android.screen.request.RequestListFragment;
+import com.patis.wms.android.screen.task.TaskListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = RequestListFragment.class;
         } else if (id == R.id.nav_worker) {
             fragmentClass = NewRequestFragment.class;
+        } else if (id == R.id.nav_task) {
+            fragmentClass = TaskListFragment.class;
         }
 
         try {

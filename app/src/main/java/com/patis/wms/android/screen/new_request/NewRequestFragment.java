@@ -18,7 +18,7 @@ public class NewRequestFragment extends Fragment {
 
     private View root;
 
-    private TextView text;
+    private TextView tvTittle;
 
     public NewRequestFragment() {
         // Required empty public constructor
@@ -31,10 +31,10 @@ public class NewRequestFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_new_request, container, false);
 
-        text = root.findViewById(R.id.text);
+        tvTittle = root.findViewById(R.id.tvTittle);
 
         if(getArguments() != null){
-            text.setText(String.valueOf(getArguments().getInt("operationType")));
+            tvTittle.setText(String.valueOf(getArguments().getInt("operationType")));
         }
 
         return root;

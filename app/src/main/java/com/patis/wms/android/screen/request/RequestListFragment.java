@@ -52,6 +52,9 @@ public class RequestListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.setListener(request->{
             Fragment fragment = new NewRequestFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("operationType", request.getOperationType().ordinal());
+            fragment.setArguments(bundle);
             ((MainActivity) getActivity()).setContent(fragment);
         });
 

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.patis.wms.android.App;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.RequestDTO;
+import com.patis.wms.android.dto.TaskDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
 import com.patis.wms.android.dto.create.RequestItemCreateDTO;
 import com.patis.wms.android.screen.request.RequestListAdapter;
@@ -29,7 +30,6 @@ import retrofit2.Response;
 public class TaskListFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private FloatingActionButton fab;
     private View root;
 
 
@@ -43,36 +43,28 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_request_list, container, false);
         recyclerView = root.findViewById(R.id.requestList);
-        fab = root.findViewById(R.id.fab);
-        fab.setOnClickListener(e->{
-            System.out.println("sdadasdas");
-        });
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        RequestListAdapter adapter = new RequestListAdapter();
+        TaskListAdapter adapter = new TaskListAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setListener(request->{
             System.out.println("uytjk");
         });
 
-        App.getBackendApi().getRequests().enqueue(new Callback<List<RequestDTO>>() {
+        App.getBackendApi().getTasksByWorker(1, true).enqueue(new Callback<List<TaskDTO>>() {
             @Override
-            public void onResponse(Call<List<RequestDTO>> call, Response<List<RequestDTO>> response) {
+            public void onResponse(Call<List<TaskDTO>> call, Response<List<TaskDTO>> response) {
                 if(response.body() != null){
                     adapter.setData(response.body());
                     adapter.notifyDataSetChanged();
                 }
             }
-            @Override public void onFailure(Call<List<RequestDTO>> call, Throwable t) {
+            @Override public void onFailure(Call<List<TaskDTO>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
 
-
-        RequestCreateDTO dto = new RequestCreateDTO();
-        dto.getItems().add(new RequestItemCreateDTO());
-        App.getBackendApi().send(dto);
 
         return root;
     }
