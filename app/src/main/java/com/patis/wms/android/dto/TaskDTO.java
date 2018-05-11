@@ -20,5 +20,7 @@ public class TaskDTO {
     private List<DistributionDTO> distributions;
     private Date timeBegin;
     private Date timeEnd;
+    private WorkerDTO worker;
+    private String customerName;
 
 }
