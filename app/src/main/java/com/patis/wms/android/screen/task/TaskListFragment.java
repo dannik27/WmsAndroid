@@ -1,6 +1,7 @@
 package com.patis.wms.android.screen.task;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -64,8 +65,10 @@ public class TaskListFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         listAdapter = new TaskListAdapter();
         recyclerView.setAdapter(listAdapter);
-        listAdapter.setListener(request->{
-            System.out.println("uytjk");
+        listAdapter.setListener(task->{
+            Intent intent = new Intent(getActivity(), TaskActivity.class);
+            intent.putExtra("taskId", task.getId());
+            startActivity(intent);
         });
 
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary,
@@ -127,4 +130,9 @@ public class TaskListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        fireSwipeRefresh();
+    }
 }

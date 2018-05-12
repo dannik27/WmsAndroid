@@ -3,12 +3,13 @@ package com.patis.wms.android.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
-public class PersonDTO {
+public class PersonDTO implements Serializable {
 
     private long id;
     private String name;

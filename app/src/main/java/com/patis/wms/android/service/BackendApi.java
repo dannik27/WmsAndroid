@@ -12,6 +12,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -22,8 +23,7 @@ public interface BackendApi {
 
 
 
-    @POST("fjsdfkjs/")
-    Call send(@Body RequestCreateDTO dto);
+
 
     @GET("request/")
     Call<List<RequestDTO>> getRequests();
@@ -33,4 +33,16 @@ public interface BackendApi {
 
     @GET("worker/authorization/")
     Call<WorkerDTO> authorization(@Query("login") String login, @Query("password") String password);
+
+    @GET("worker/{id_worker}/")
+    Call<WorkerDTO> findWorkerById(@Path("id_worker") long id);
+
+    @POST("task/{id_task}/start/")
+    Call<Void> startTask(@Path("id_task") long id_task);
+
+    @POST("task/{id_task}/complete/{id_distribution}/")
+    Call<Void> completeDistribution(@Path("id_task") long id_task, @Path("id_distribution") long id_distribution);
+
+    @GET("task/{id_task}/")
+    Call<TaskDTO> getTaskById(@Path("id_task") long id_task);
 }

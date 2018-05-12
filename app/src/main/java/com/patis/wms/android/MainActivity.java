@@ -15,14 +15,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.screen.login.LoginActivity;
 import com.patis.wms.android.screen.new_request.NewRequestFragment;
 import com.patis.wms.android.screen.request.RequestListFragment;
 import com.patis.wms.android.screen.task.TaskListFragment;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    TextView tvCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        tvCurrentUser = navigationView.getHeaderView(0).findViewById(R.id.tvCurrentUser);
+
+        App.getBackendApi().findWorkerById(App.local().getLong("currentUserId")).enqueue(new Callback<WorkerDTO>() {
+            @Override
+            public void onResponse(Call<WorkerDTO> call, Response<WorkerDTO> response) {
+                WorkerDTO workerDTO = response.body();
+                if (workerDTO != null){
+                    tvCurrentUser.setText(workerDTO.getPerson().getFio());
+                }
+            }
+            @Override public void onFailure(Call<WorkerDTO> call, Throwable t) {}
+        });
+
     }
 
     @Override
