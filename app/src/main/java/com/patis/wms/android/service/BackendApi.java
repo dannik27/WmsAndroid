@@ -1,7 +1,9 @@
 package com.patis.wms.android.service;
 
+import com.patis.wms.android.dto.PersonDTO;
 import com.patis.wms.android.dto.RequestDTO;
 import com.patis.wms.android.dto.TaskDTO;
+import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
 
 import java.util.List;
@@ -28,4 +30,7 @@ public interface BackendApi {
 
     @GET("task/")
     Call<List<TaskDTO>> getTasksByWorker(@Query("id_worker") long id_worker, @Query("current") boolean current);
+
+    @GET("worker/authorization/")
+    Call<WorkerDTO> authorization(@Query("login") String login, @Query("password") String password);
 }

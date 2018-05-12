@@ -4,11 +4,15 @@ package com.patis.wms.android.screen.task;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.patis.wms.android.App;
 import com.patis.wms.android.R;
@@ -30,8 +34,15 @@ import retrofit2.Response;
 public class TaskListFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefresh;
     private View root;
 
+    private CheckBox cbMy;
+    private CheckBox cbActive;
+
+    TextView tvEmpty;
+
+    TaskListAdapter listAdapter;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -41,32 +52,79 @@ public class TaskListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_request_list, container, false);
+        root = inflater.inflate(R.layout.fragment_task_list, container, false);
         recyclerView = root.findViewById(R.id.requestList);
+        swipeRefresh = root.findViewById(R.id.swipeRefresh);
+        cbMy = root.findViewById(R.id.cbMy);
+        cbActive = root.findViewById(R.id.cbActive);
+        tvEmpty = root.findViewById(R.id.tvEmpty);
+
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        TaskListAdapter adapter = new TaskListAdapter();
-        recyclerView.setAdapter(adapter);
-        adapter.setListener(request->{
+        listAdapter = new TaskListAdapter();
+        recyclerView.setAdapter(listAdapter);
+        listAdapter.setListener(request->{
             System.out.println("uytjk");
         });
 
-        App.getBackendApi().getTasksByWorker(1, true).enqueue(new Callback<List<TaskDTO>>() {
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary,
+                R.color.colorAccent,
+                R.color.colorPrimaryDark,
+                R.color.colorAccent);
+
+        swipeRefresh.setOnRefreshListener(()-> updateList());
+        fireSwipeRefresh();
+
+        cbMy.setOnClickListener(e-> fireSwipeRefresh());
+        cbActive.setOnClickListener(e-> fireSwipeRefresh());
+
+        return root;
+    }
+
+    private void fireSwipeRefresh(){
+        swipeRefresh.post(() -> {
+            if(swipeRefresh != null) {
+                swipeRefresh.setRefreshing(true);
+            }
+            updateList();
+        });
+    }
+
+    private void updateList(){
+
+        boolean onlyActive = cbActive.isChecked();
+        int id_worker;
+        if(cbMy.isChecked()){
+            id_worker = (int) App.local().getLong("currentUserId");
+        }else{
+            id_worker = 0;
+        }
+
+        App.getBackendApi().getTasksByWorker(id_worker, onlyActive).enqueue(new Callback<List<TaskDTO>>() {
             @Override
             public void onResponse(Call<List<TaskDTO>> call, Response<List<TaskDTO>> response) {
                 if(response.body() != null){
-                    adapter.setData(response.body());
-                    adapter.notifyDataSetChanged();
+                    setListContent(response.body());
+                    swipeRefresh.setRefreshing(false);
                 }
             }
             @Override public void onFailure(Call<List<TaskDTO>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
+    }
 
-
-        return root;
+    private void setListContent(List<TaskDTO> data){
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+        if(data.isEmpty()){
+            recyclerView.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+        }else{
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.GONE);
+        }
     }
 
 }

@@ -6,6 +6,8 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.patis.wms.android.service.BackendApi;
+import com.patis.wms.android.service.LocalData;
+import com.patis.wms.android.service.SqliteHelper;
 import com.patis.wms.android.service.gson.DateAdapter;
 
 import java.util.Date;
@@ -17,12 +19,16 @@ public class App extends Application {
 
     private static Context context;
     private static BackendApi backend;
+    private static LocalData localData;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         context = getApplicationContext();
+
+        SqliteHelper sqliteHelper = new SqliteHelper(context);
+        localData = new LocalData(sqliteHelper);
 
     }
 
@@ -48,5 +54,8 @@ public class App extends Application {
 
     public static Context getContext() {
         return context;
+    }
+    public static LocalData local(){
+        return localData;
     }
 }

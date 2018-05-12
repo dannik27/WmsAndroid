@@ -1,5 +1,6 @@
 package com.patis.wms.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.patis.wms.android.screen.login.LoginActivity;
 import com.patis.wms.android.screen.new_request.NewRequestFragment;
 import com.patis.wms.android.screen.request.RequestListFragment;
 import com.patis.wms.android.screen.task.TaskListFragment;
@@ -75,6 +77,17 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+        if(item.getItemId() == R.id.nav_close){
+            App.local().remove("password");
+            App.local().remove("personId");
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+            return true;
+        }
 
         Fragment fragment = null;
         Class fragmentClass = null;

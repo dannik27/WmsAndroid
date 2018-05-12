@@ -71,7 +71,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
 
 
-        holder.tvWorker.setText(data.get(position).getWorker().getPerson().getLastName());
+        holder.tvWorker.setText(data.get(position).getWorker().getPerson().getFio());
         holder.tvStatus.setText(data.get(position).getTaskStatus().toString());
         holder.tvDate.setText(dateFormat.format(data.get(position).getTimeBegin()));
         holder.tvCustomer.setText(data.get(position).getCustomerName());

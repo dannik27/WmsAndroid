@@ -9,10 +9,10 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="60dp">
 
-        <RadioButton
-            android:id="@+id/rbMy"
+        <CheckBox
+            android:id="@+id/cbMy"
             android:layout_width="141dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -22,44 +22,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/rbActive"
-            android:layout_width="141dp"
+        <CheckBox
+            android:id="@+id/cbActive"
+            android:layout_width="204dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="16dp"
             android:checked="true"
             android:text="Только активные"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cbMy"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/spinnerSort"
-            android:layout_width="193dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="172dp"
-            android:layout_marginTop="60dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="185dp"
-            android:layout_height="33dp"
-            android:layout_marginStart="172dp"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Сортировать по:"
-            android:textAlignment="textStart"
-            android:textAppearance="@android:style/TextAppearance.Material"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/requestList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Пуфто"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/requestList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+
 
 
 </LinearLayout>

@@ -17,4 +17,9 @@ public class PersonDTO {
     private Date birthDate;
     private String email;
 
+
+    public String getFio(){
+        return String.format("%s %s. %s.", lastName, name.charAt(0), middleName.charAt(0));
+    }
+
 }

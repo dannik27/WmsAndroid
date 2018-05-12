@@ -16,10 +16,10 @@
             android:id="@+id/nav_task"
             android:icon="@drawable/ic_list"
             android:title="Задачи" />
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
+        <item
+            android:id="@+id/nav_close"
+            android:icon="@drawable/ic_close"
+            android:title="Выход" />
 
 
     </group>
