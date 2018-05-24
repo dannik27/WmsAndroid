@@ -12,8 +12,8 @@ public class StorehouseDTO {
     private String address;
 
 
-
-
-
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

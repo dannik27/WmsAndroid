@@ -1,7 +1,9 @@
 package com.patis.wms.android.service;
 
+import com.patis.wms.android.dto.CustomerDTO;
 import com.patis.wms.android.dto.PersonDTO;
 import com.patis.wms.android.dto.RequestDTO;
+import com.patis.wms.android.dto.StorehouseDTO;
 import com.patis.wms.android.dto.TaskDTO;
 import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
@@ -45,4 +47,10 @@ public interface BackendApi {
 
     @GET("task/{id_task}/")
     Call<TaskDTO> getTaskById(@Path("id_task") long id_task);
+
+    @GET("customer/")
+    Call<List<CustomerDTO>> getCustomers();
+
+    @GET("storehouse/")
+    Call<List<StorehouseDTO>> getStorehouses();
 }

@@ -109,11 +109,12 @@ public class TaskListFragment extends Fragment {
             public void onResponse(Call<List<TaskDTO>> call, Response<List<TaskDTO>> response) {
                 if(response.body() != null){
                     setListContent(response.body());
-                    swipeRefresh.setRefreshing(false);
                 }
+                swipeRefresh.setRefreshing(false);
             }
             @Override public void onFailure(Call<List<TaskDTO>> call, Throwable t) {
-                t.printStackTrace();
+                swipeRefresh.setRefreshing(false);
+
             }
         });
     }

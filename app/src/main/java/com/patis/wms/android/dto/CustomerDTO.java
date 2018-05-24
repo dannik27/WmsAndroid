@@ -11,5 +11,8 @@ public class CustomerDTO {
     private CompanyDTO company;
 
 
-
+    @Override
+    public String toString() {
+        return company.getName();
+    }
 }
