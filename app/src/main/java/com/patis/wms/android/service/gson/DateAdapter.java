@@ -39,6 +39,6 @@ public class DateAdapter implements JsonDeserializer<Date>, JsonSerializer<Date>
 
     @Override
     public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(dateTimeFormat.format(src));
+        return new JsonPrimitive(dateFormat.format(src));
     }
 }

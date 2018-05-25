@@ -9,6 +9,7 @@ import com.patis.wms.android.service.BackendApi;
 import com.patis.wms.android.service.LocalData;
 import com.patis.wms.android.service.SqliteHelper;
 import com.patis.wms.android.service.gson.DateAdapter;
+import com.patis.wms.android.service.GetFromCustomer;
 
 import java.util.Date;
 
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class App extends Application {
 
     private static Context context;
-    private static BackendApi backend;
+    private static Retrofit retrofit;
     private static LocalData localData;
 
     @Override
@@ -33,23 +34,26 @@ public class App extends Application {
     }
 
     public static BackendApi getBackendApi(){
-        if(backend == null){
+        return getRetrofit().create(BackendApi.class);
+    }
+
+    public static GetFromCustomer getFromCustomerApi(){
+        return getRetrofit().create(GetFromCustomer.class);
+    }
+
+    private static Retrofit getRetrofit(){
+        if(retrofit == null){
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Date.class, new DateAdapter())
                     .create();
 
 
-            Retrofit retrofit = new Retrofit.Builder()
+            retrofit = new Retrofit.Builder()
                     .baseUrl("http://kokoserver.me:8090/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
-            backend = retrofit.create(BackendApi.class);
-
-
-
         }
-        return backend;
-
+        return retrofit;
     }
 
     public static Context getContext() {

@@ -1,4 +1,4 @@
-package com.patis.wms.android.screen.task;
+package com.patis.wms.android.screen.new_request;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +9,8 @@ import android.widget.TextView;
 
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.DistributionDTO;
-import com.patis.wms.android.dto.TaskDTO;
+import com.patis.wms.android.dto.RequestItemDTO;
+import com.patis.wms.android.screen.request.RequestListAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -18,13 +19,19 @@ import java.util.Locale;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class DistributionListAdapter extends RecyclerView.Adapter<DistributionListAdapter.ViewHolder> {
+public class RequestItemListAdapter extends RecyclerView.Adapter<RequestItemListAdapter.ViewHolder> {
 
-    private List<DistributionDTO> data;
+    private List<RequestItemDTO> data;
 
-    private DistributionListClickListener clickListener;
+    private RequestItemListClickListener clickListener;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+
+    private boolean deleteButtonVisible;
+
+    public void setDeleteButtonVisible(boolean visibility){
+        deleteButtonVisible = visibility;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -33,38 +40,49 @@ public class DistributionListAdapter extends RecyclerView.Adapter<DistributionLi
         TextView tvCount;
         TextView tvCell;
         Button btnDone;
+        TextView tvDate;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v, boolean deleteButtonVisible) {
             super(v);
             root = v;
             tvName = root.findViewById(R.id.tvName);
             tvCount = root.findViewById(R.id.tvCount);
             tvCell = root.findViewById(R.id.tvCell);
             btnDone = root.findViewById(R.id.btnDone);
+            tvDate = root.findViewById(R.id.tvDate);
+
+            tvCell.setVisibility(View.GONE);
+            tvDate.setVisibility(View.GONE);
+
+            btnDone.setBackgroundResource(R.drawable.ic_delete);
+
+            if(! deleteButtonVisible){
+                btnDone.setVisibility(View.GONE);
+            }
 
 
         }
     }
 
-    public void setData(List<DistributionDTO> data){
+    public void setData(List<RequestItemDTO> data){
         this.data = data;
     }
-    public void setListener(DistributionListClickListener listener){
+    public void setListener(RequestItemListClickListener listener){
         this.clickListener = listener;
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DistributionListAdapter(List<DistributionDTO> data, DistributionListClickListener clickListener) {
+    public RequestItemListAdapter(List<RequestItemDTO> data, RequestItemListClickListener clickListener) {
         this.data = data;
         this.clickListener = clickListener;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public DistributionListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RequestItemListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_distribution_list_item, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, deleteButtonVisible);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -74,11 +92,6 @@ public class DistributionListAdapter extends RecyclerView.Adapter<DistributionLi
 
         holder.tvName.setText(String.format("%s (id %d)", data.get(position).getProduct().getName(), data.get(position).getProduct().getId()));
         holder.tvCount.setText(String.valueOf(data.get(position).getCount()));
-        holder.tvCell.setText(data.get(position).getCell().getName());
-
-        if(data.get(position).isDone()){
-            holder.btnDone.setBackgroundResource(R.drawable.ic_check);
-        }
 
         holder.btnDone.setOnClickListener(e -> {
             if(clickListener != null){
@@ -91,6 +104,8 @@ public class DistributionListAdapter extends RecyclerView.Adapter<DistributionLi
                 }
             }
         });
+
+
 
     }
 
@@ -105,7 +120,7 @@ public class DistributionListAdapter extends RecyclerView.Adapter<DistributionLi
     }
 
 
-    public interface DistributionListClickListener {
-        void handle(DistributionDTO distribution) throws IllegalAccessException, InstantiationException;
+    public interface RequestItemListClickListener {
+        void handle(RequestItemDTO requestItem) throws IllegalAccessException, InstantiationException;
     }
 }

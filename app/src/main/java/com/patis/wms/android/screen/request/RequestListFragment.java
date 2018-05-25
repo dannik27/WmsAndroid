@@ -1,24 +1,22 @@
 package com.patis.wms.android.screen.request;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.patis.wms.android.App;
-import com.patis.wms.android.MainActivity;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.RequestDTO;
-import com.patis.wms.android.dto.create.RequestCreateDTO;
-import com.patis.wms.android.dto.create.RequestItemCreateDTO;
 import com.patis.wms.android.dto.entity.OperationType;
-import com.patis.wms.android.screen.new_request.NewRequestFragment;
+import com.patis.wms.android.screen.new_request.RequestActivity;
 
 import java.util.List;
 
@@ -34,6 +32,7 @@ public class RequestListFragment extends Fragment {
     private RecyclerView recyclerView;
     private View root;
 
+    private RequestListAdapter adapter;
 
     public RequestListFragment() {
         // Required empty public constructor
@@ -48,47 +47,71 @@ public class RequestListFragment extends Fragment {
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        RequestListAdapter adapter = new RequestListAdapter();
+        adapter = new RequestListAdapter();
         recyclerView.setAdapter(adapter);
-        adapter.setListener(request->{
-            Fragment fragment = new NewRequestFragment();
+        adapter.setListener(request -> {
             Bundle bundle = new Bundle();
-            bundle.putInt("operationType", request.getOperationType().ordinal());
-            fragment.setArguments(bundle);
-            ((MainActivity) getActivity()).setContent(fragment);
+            bundle.putInt("request_id", (int) request.getId());
+            Intent intent = new Intent(getActivity(), RequestActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
-        App.getBackendApi().getRequests().enqueue(new Callback<List<RequestDTO>>() {
-            @Override
-            public void onResponse(Call<List<RequestDTO>> call, Response<List<RequestDTO>> response) {
-                if(response.body() != null){
-                    adapter.setData(response.body());
-                    adapter.notifyDataSetChanged();
-                }
-            }
-            @Override public void onFailure(Call<List<RequestDTO>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+
+        FloatingActionMenu fam = root.findViewById(R.id.fam);
+        fam.setClosedOnTouchOutside(true);
 
         FloatingActionButton fabIn = root.findViewById(R.id.menu_in);
         FloatingActionButton fabOut = root.findViewById(R.id.menu_out);
         FloatingActionButton fabOutIn = root.findViewById(R.id.menu_out_in);
-
-        fabIn.setOnClickListener(e-> newRequest(OperationType.IN));
-        fabOut.setOnClickListener(e-> newRequest(OperationType.OUT));
-        fabOutIn.setOnClickListener(e-> newRequest(OperationType.IN_OUT));
+        fabIn.setOnClickListener(e -> {
+            newRequest(OperationType.IN);
+            fam.close(false);
+        });
+        fabOut.setOnClickListener(e -> {
+            newRequest(OperationType.OUT);
+            fam.close(false);
+        });
+        fabOutIn.setOnClickListener(e -> {
+            newRequest(OperationType.IN_OUT);
+            fam.close(false);
+        });
 
 
         return root;
     }
 
-    void newRequest(OperationType operationType){
-        Fragment fragment = new NewRequestFragment();
+    void newRequest(OperationType operationType) {
+
         Bundle bundle = new Bundle();
         bundle.putInt("operationType", operationType.ordinal());
-        fragment.setArguments(bundle);
-        ((MainActivity) getActivity()).setContent(fragment);
+        Intent intent = new Intent(getActivity(), RequestActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateList();
+    }
+
+    private void updateList() {
+        App.getBackendApi().getRequests().enqueue(new Callback<List<RequestDTO>>() {
+            @Override
+            public void onResponse(Call<List<RequestDTO>> call, Response<List<RequestDTO>> response) {
+                if (response.body() != null) {
+                    adapter.setData(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RequestDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 }

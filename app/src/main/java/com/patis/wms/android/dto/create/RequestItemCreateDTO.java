@@ -13,6 +13,8 @@ public class RequestItemCreateDTO implements Serializable {
     private int count;
     private long id_product;
 
-
-
+    public RequestItemCreateDTO(int count, long id_product) {
+        this.count = count;
+        this.id_product = id_product;
+    }
 }

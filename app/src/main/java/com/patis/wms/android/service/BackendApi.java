@@ -3,10 +3,12 @@ package com.patis.wms.android.service;
 import com.patis.wms.android.dto.CustomerDTO;
 import com.patis.wms.android.dto.PersonDTO;
 import com.patis.wms.android.dto.RequestDTO;
+import com.patis.wms.android.dto.RequestItemDTO;
 import com.patis.wms.android.dto.StorehouseDTO;
 import com.patis.wms.android.dto.TaskDTO;
 import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
+import com.patis.wms.android.dto.entity.Product;
 
 import java.util.List;
 
@@ -53,4 +55,15 @@ public interface BackendApi {
 
     @GET("storehouse/")
     Call<List<StorehouseDTO>> getStorehouses();
+
+    @GET("product/")
+    Call<List<Product>> getProducts();
+
+    @GET("request/{id}/")
+    Call<RequestDTO> getRequestById(@Path("id") int requestId);
+
+    @GET("request/{id}/item/")
+    Call<List<RequestItemDTO>> getRequestItems(@Path("id") int requestId);
+
+
 }

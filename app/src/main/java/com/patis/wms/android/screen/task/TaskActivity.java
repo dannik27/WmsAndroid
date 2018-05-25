@@ -106,10 +106,13 @@ public class TaskActivity extends AppCompatActivity {
 
         });
 
+
+
         btnStart.setOnClickListener(e->{
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Взять задачу в работу?")
                     .setPositiveButton("Да", (dialog, id) -> {
+
                         App.getBackendApi().startTask(taskId).enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
