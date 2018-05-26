@@ -6,6 +6,7 @@ import com.patis.wms.android.dto.RequestDTO;
 import com.patis.wms.android.dto.RequestItemDTO;
 import com.patis.wms.android.dto.StorehouseDTO;
 import com.patis.wms.android.dto.TaskDTO;
+import com.patis.wms.android.dto.TransportationDTO;
 import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
 import com.patis.wms.android.dto.entity.Product;
@@ -64,6 +65,9 @@ public interface BackendApi {
 
     @GET("request/{id}/item/")
     Call<List<RequestItemDTO>> getRequestItems(@Path("id") int requestId);
+
+    @GET("transportation/")
+    Call<List<TransportationDTO>> getTransportations();
 
 
 }

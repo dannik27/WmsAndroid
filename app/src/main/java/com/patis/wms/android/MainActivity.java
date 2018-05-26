@@ -22,6 +22,7 @@ import com.patis.wms.android.screen.login.LoginActivity;
 import com.patis.wms.android.screen.new_request.NewRequestFragment;
 import com.patis.wms.android.screen.request.RequestListFragment;
 import com.patis.wms.android.screen.task.TaskListFragment;
+import com.patis.wms.android.screen.transportation.TransportationListFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,8 +120,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_request) {
             fragmentClass = RequestListFragment.class;
-        } else if (id == R.id.nav_worker) {
-            fragmentClass = NewRequestFragment.class;
+        } else if (id == R.id.nav_transportation) {
+            fragmentClass = TransportationListFragment.class;
         } else if (id == R.id.nav_task) {
             fragmentClass = TaskListFragment.class;
         }

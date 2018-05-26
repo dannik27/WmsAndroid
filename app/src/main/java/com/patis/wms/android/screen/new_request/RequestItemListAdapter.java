@@ -27,7 +27,7 @@ public class RequestItemListAdapter extends RecyclerView.Adapter<RequestItemList
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
 
-    private boolean deleteButtonVisible;
+    private boolean deleteButtonVisible = true;
 
     public void setDeleteButtonVisible(boolean visibility){
         deleteButtonVisible = visibility;

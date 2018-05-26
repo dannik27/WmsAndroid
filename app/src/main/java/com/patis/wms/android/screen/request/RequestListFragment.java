@@ -4,11 +4,14 @@ package com.patis.wms.android.screen.request;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -32,7 +35,10 @@ public class RequestListFragment extends Fragment {
     private RecyclerView recyclerView;
     private View root;
 
-    private RequestListAdapter adapter;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView tvEmpty;
+
+    private RequestListAdapter listAdapter;
 
     public RequestListFragment() {
         // Required empty public constructor
@@ -43,13 +49,19 @@ public class RequestListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_request_list, container, false);
-        recyclerView = root.findViewById(R.id.requestList);
+        recyclerView = root.findViewById(R.id.recyclerView);
+
+        swipeRefresh = root.findViewById(R.id.swipeRefresh);
+        tvEmpty = root.findViewById(R.id.tvEmpty);
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        adapter = new RequestListAdapter();
-        recyclerView.setAdapter(adapter);
-        adapter.setListener(request -> {
+        listAdapter = new RequestListAdapter();
+        recyclerView.setAdapter(listAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                llm.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        listAdapter.setListener(request -> {
             Bundle bundle = new Bundle();
             bundle.putInt("request_id", (int) request.getId());
             Intent intent = new Intent(getActivity(), RequestActivity.class);
@@ -77,6 +89,14 @@ public class RequestListFragment extends Fragment {
             fam.close(false);
         });
 
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary,
+                R.color.colorAccent,
+                R.color.colorPrimaryDark,
+                R.color.colorAccent);
+
+        swipeRefresh.setOnRefreshListener(this::updateList);
+        fireSwipeRefresh();
+
 
         return root;
     }
@@ -91,11 +111,32 @@ public class RequestListFragment extends Fragment {
 
     }
 
+    private void fireSwipeRefresh(){
+        swipeRefresh.post(() -> {
+            if(swipeRefresh != null) {
+                swipeRefresh.setRefreshing(true);
+            }
+            updateList();
+        });
+    }
+
+    private void setListContent(List<RequestDTO> data){
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+        if(data.isEmpty()){
+            recyclerView.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+        }else{
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        updateList();
+        fireSwipeRefresh();
     }
 
     private void updateList() {
@@ -103,13 +144,15 @@ public class RequestListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<RequestDTO>> call, Response<List<RequestDTO>> response) {
                 if (response.body() != null) {
-                    adapter.setData(response.body());
-                    adapter.notifyDataSetChanged();
+                    listAdapter.setData(response.body());
+                    listAdapter.notifyDataSetChanged();
                 }
+                swipeRefresh.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<RequestDTO>> call, Throwable t) {
+                swipeRefresh.setRefreshing(false);
                 t.printStackTrace();
             }
         });

@@ -2,6 +2,7 @@ package com.patis.wms.android.screen.new_request;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -76,6 +77,10 @@ public class RequestActivity extends AppCompatActivity {
     ArrayAdapter<StorehouseDTO> fromAdapter;
     ArrayAdapter<StorehouseDTO> toAdapter;
 
+    private SwipeRefreshLayout swipeRefresh;
+
+    private View content;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,12 @@ public class RequestActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
 
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        content = findViewById(R.id.content);
+
+        content.setVisibility(View.GONE);
+        swipeRefresh.setEnabled(true);
+        swipeRefresh.setRefreshing(true);
 
         customerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item);
         customerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -165,7 +176,9 @@ public class RequestActivity extends AppCompatActivity {
         });
 
         if(getIntent().getExtras() != null){
+
             new ActivityUpdateTask().execute(getIntent().getExtras());
+
         }
 
     }
@@ -210,6 +223,8 @@ public class RequestActivity extends AppCompatActivity {
                 sTo.setEnabled(false);
                 sFrom.setEnabled(false);
 
+                listAdapter.setDeleteButtonVisible(false);
+
             }
 
             switch (request.getOperationType()){
@@ -228,6 +243,11 @@ public class RequestActivity extends AppCompatActivity {
             }
 
             invalidateOptionsMenu();
+
+            content.setVisibility(View.VISIBLE);
+            swipeRefresh.setRefreshing(false);
+            swipeRefresh.setEnabled(false);
+
         }
 
         @Override
@@ -255,8 +275,8 @@ public class RequestActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.request, menu);
-        if(request != null && request.getId() != 0){
-            menu.findItem(R.id.action_save).setVisible(false);
+        if(request != null && request.getId() == 0){
+            menu.findItem(R.id.action_save).setVisible(true);
         }
 
         return true;
