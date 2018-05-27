@@ -10,4 +10,8 @@ public class TransportCompanyDTO {
     private CompanyDTO company;
 
 
+    @Override
+    public String toString() {
+        return company.getName();
+    }
 }

@@ -13,7 +13,7 @@ public class TransportationCreateDTO implements Serializable {
     private float grossWeight;
     private long id_request;
 
-    private WaybillDTO waybill;
+    private WaybillCreateDTO waybill;
     private PackingListDTO packingList;
 
 

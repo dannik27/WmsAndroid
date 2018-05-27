@@ -18,6 +18,7 @@ import com.patis.wms.android.App;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.TaskDTO;
 import com.patis.wms.android.dto.TransportationDTO;
+import com.patis.wms.android.screen.new_request.RequestActivity;
 import com.patis.wms.android.screen.request.RequestListAdapter;
 import com.patis.wms.android.screen.task.TaskActivity;
 import com.patis.wms.android.screen.task.TaskListAdapter;
@@ -67,15 +68,20 @@ public class TransportationListFragment extends Fragment {
                 llm.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
         listAdapter.setListener(transportation->{
-        //    Intent intent = new Intent(getActivity(), TransportationActivity.class);
-        //    intent.putExtra("transportationId", transportation.getId());
-        //    startActivity(intent);
+            Intent intent = new Intent(getActivity(), TransportationActivity.class);
+            intent.putExtra("transportationId", transportation.getId());
+            startActivity(intent);
         });
 
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary,
                 R.color.colorAccent,
                 R.color.colorPrimaryDark,
                 R.color.colorAccent);
+
+        fab.setOnClickListener(e->{
+            Intent intent = new Intent(getActivity(), TransportationActivity.class);
+            startActivity(intent);
+        });
 
         swipeRefresh.setOnRefreshListener(this::updateList);
         fireSwipeRefresh();

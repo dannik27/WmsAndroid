@@ -31,6 +31,7 @@ import com.patis.wms.android.dto.create.RequestItemCreateDTO;
 import com.patis.wms.android.dto.entity.OperationType;
 import com.patis.wms.android.dto.entity.Product;
 import com.patis.wms.android.dto.entity.TaskStatus;
+import com.patis.wms.android.screen.Initializable;
 import com.patis.wms.android.screen.request.RequestListAdapter;
 import com.patis.wms.android.screen.task.DistributionListAdapter;
 
@@ -46,7 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RequestActivity extends AppCompatActivity {
+public class RequestActivity extends AppCompatActivity implements Initializable{
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
 
@@ -80,6 +81,10 @@ public class RequestActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefresh;
 
     private View content;
+
+    private List<CustomerDTO> customers;
+    private List<StorehouseDTO> storehouses;
+    private List<RequestItemDTO> items;
 
 
     @Override
@@ -177,99 +182,86 @@ public class RequestActivity extends AppCompatActivity {
 
         if(getIntent().getExtras() != null){
 
-            new ActivityUpdateTask().execute(getIntent().getExtras());
+            startInitialization(getIntent().getExtras());
 
         }
 
     }
 
-
-    class ActivityUpdateTask extends AsyncTask<Bundle, Void, Bundle>{
-
-        List<CustomerDTO> customers;
-        List<StorehouseDTO> storehouses;
-        List<RequestItemDTO> items;
-
-
-        @Override
-        protected void onPostExecute(Bundle b) {
-            super.onPostExecute(b);
-
-            customerAdapter.addAll(customers);
-            fromAdapter.addAll(storehouses);
-            toAdapter.addAll(storehouses);
-
-            sCustomer.setSelection(0);
-            sTo.setSelection(0);
-            sFrom.setSelection(0);
-
-
-            if(request.getId() != 0){
-                if(request.getCustomer() != null){
-                    sCustomer.setSelection(customerAdapter.getPosition(request.getCustomer()));
-                }
-                if(request.getStorehouseFrom() != null){
-                    sFrom.setSelection(fromAdapter.getPosition(request.getStorehouseFrom()));
-                }
-                if(request.getStorehouseTo() != null){
-                    sTo.setSelection(toAdapter.getPosition(request.getStorehouseTo()));
-                }
-
-                data.addAll(items);
-
-                tvTittle.setVisibility(View.GONE);
-                btnAddItem.setVisibility(View.GONE);
-                sCustomer.setEnabled(false);
-                sTo.setEnabled(false);
-                sFrom.setEnabled(false);
-
-                listAdapter.setDeleteButtonVisible(false);
-
+    @Override
+    public void initializeData(Bundle bundle) {
+        try {
+            customers = App.getBackendApi().getCustomers().execute().body();
+            storehouses = App.getBackendApi().getStorehouses().execute().body();
+            if(bundle.containsKey("request_id")){
+                request = App.getBackendApi().getRequestById(bundle.getInt("request_id")).execute().body();
+                items = App.getBackendApi().getRequestItems(bundle.getInt("request_id")).execute().body();
+            }else{
+                request = new RequestDTO();
+                request.setOperationType(OperationType.values()[getIntent().getExtras().getInt("operationType")]);
             }
 
-            switch (request.getOperationType()){
-                case IN:
-                    tvTittle.setText("Укажите заказчика и склад приёма");
-                    boxFrom.setVisibility(View.GONE);
-                    break;
-                case OUT:
-                    tvTittle.setText("Укажите заказчика и склад отгрузки");
-                    boxTo.setVisibility(View.GONE);
-                    break;
-                case IN_OUT:
-                    tvTittle.setText("Укажите склады отгрузки и приёма");
-                    boxCustomer.setVisibility(View.GONE);
-                    break;
-            }
-
-            invalidateOptionsMenu();
-
-            content.setVisibility(View.VISIBLE);
-            swipeRefresh.setRefreshing(false);
-            swipeRefresh.setEnabled(false);
-
-        }
-
-        @Override
-        protected Bundle doInBackground(Bundle[] objects) {
-            Bundle bundle = objects[0];
-            try {
-                customers = App.getBackendApi().getCustomers().execute().body();
-                storehouses = App.getBackendApi().getStorehouses().execute().body();
-                if(bundle.containsKey("request_id")){
-                    request = App.getBackendApi().getRequestById(bundle.getInt("request_id")).execute().body();
-                    items = App.getBackendApi().getRequestItems(bundle.getInt("request_id")).execute().body();
-                }else{
-                    request = new RequestDTO();
-                    request.setOperationType(OperationType.values()[getIntent().getExtras().getInt("operationType")]);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return bundle;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    @Override
+    public void initializeView(Bundle bundle) {
+        customerAdapter.addAll(customers);
+        fromAdapter.addAll(storehouses);
+        toAdapter.addAll(storehouses);
+
+        sCustomer.setSelection(0);
+        sTo.setSelection(0);
+        sFrom.setSelection(0);
+
+
+        if(request.getId() != 0){
+            if(request.getCustomer() != null){
+                sCustomer.setSelection(customerAdapter.getPosition(request.getCustomer()));
+            }
+            if(request.getStorehouseFrom() != null){
+                sFrom.setSelection(fromAdapter.getPosition(request.getStorehouseFrom()));
+            }
+            if(request.getStorehouseTo() != null){
+                sTo.setSelection(toAdapter.getPosition(request.getStorehouseTo()));
+            }
+
+            data.addAll(items);
+
+            tvTittle.setVisibility(View.GONE);
+            btnAddItem.setVisibility(View.GONE);
+            sCustomer.setEnabled(false);
+            sTo.setEnabled(false);
+            sFrom.setEnabled(false);
+
+            listAdapter.setDeleteButtonVisible(false);
+
+        }
+
+        switch (request.getOperationType()){
+            case IN:
+                tvTittle.setText("Укажите заказчика и склад приёма");
+                boxFrom.setVisibility(View.GONE);
+                break;
+            case OUT:
+                tvTittle.setText("Укажите заказчика и склад отгрузки");
+                boxTo.setVisibility(View.GONE);
+                break;
+            case IN_OUT:
+                tvTittle.setText("Укажите склады отгрузки и приёма");
+                boxCustomer.setVisibility(View.GONE);
+                break;
+        }
+
+        invalidateOptionsMenu();
+
+        content.setVisibility(View.VISIBLE);
+        swipeRefresh.setRefreshing(false);
+        swipeRefresh.setEnabled(false);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
