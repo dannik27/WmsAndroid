@@ -48,6 +48,8 @@ public class TaskActivity extends AppCompatActivity {
     private long taskId;
     private long workerId;
 
+    private TaskDTO task;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,21 +85,35 @@ public class TaskActivity extends AppCompatActivity {
 
         listAdapter.setListener(distribution->{
 
-            if(distribution.isDone()){
-                return;
-            }
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(distribution.getProduct().getName() + " " + distribution.getCount() + " шт." + " ячейка: " + distribution.getCell().getName())
-                    .setPositiveButton("Выполнено", (dialog, id) ->
-                            App.getBackendApi().completeDistribution(taskId, distribution.getId()).enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    updateData();
+                    .setPositiveButton("Выполнено", (dialog, id) -> {
 
-                                }
-                                @Override public void onFailure(Call<Void> call, Throwable t) {}}))
+                        distribution.setDone(true);
+                        boolean alldone = true;
+                        for(DistributionDTO distr : task.getDistributions()){
+                            if(! distr.isDone()){
+                                alldone = false;
+                            }
+                        }
+                        if (alldone){
+                            tvStatus.setText("DONE");
+                        }
 
+                        App.getBackendApi().completeDistribution(taskId, distribution.getId()).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                updateData();
+
+                            }
+                            @Override public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                            });
+
+                    })
                     .setNegativeButton("Отмена", (dialog, id) -> {
                         // User cancelled the dialog
                     });
@@ -113,6 +129,11 @@ public class TaskActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Взять задачу в работу?")
                     .setPositiveButton("Да", (dialog, id) -> {
+
+                        tvStatus.setText("IN_WORK");
+                        btnStart.setVisibility(View.GONE);
+                        listAdapter.setButtonVisible(true);
+                        listAdapter.notifyDataSetChanged();
 
                         App.getBackendApi().startTask(taskId).enqueue(new Callback<Void>() {
                             @Override
@@ -139,7 +160,7 @@ public class TaskActivity extends AppCompatActivity {
         App.getBackendApi().getTaskById(taskId).enqueue(new Callback<TaskDTO>() {
             @Override
             public void onResponse(Call<TaskDTO> call, Response<TaskDTO> response) {
-                TaskDTO task = response.body();
+                task = response.body();
                 if(task != null){
 
                     workerId = task.getWorker().getId();

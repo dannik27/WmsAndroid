@@ -15,10 +15,15 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 public class DistributionListAdapter extends RecyclerView.Adapter<DistributionListAdapter.ViewHolder> {
+
+    @Setter @Getter
+    private boolean buttonVisible;
 
     private List<DistributionDTO> data;
 
@@ -71,6 +76,7 @@ public class DistributionListAdapter extends RecyclerView.Adapter<DistributionLi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        holder.btnDone.setVisibility(buttonVisible ? View.VISIBLE : View.GONE);
 
         holder.tvName.setText(String.format("%s (id %d)", data.get(position).getProduct().getName(), data.get(position).getProduct().getId()));
         holder.tvCount.setText(String.valueOf(data.get(position).getCount()));
