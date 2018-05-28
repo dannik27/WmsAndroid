@@ -1,11 +1,14 @@
 package com.patis.wms.android.screen.transportation;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.patis.wms.android.App;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.CustomerDTO;
@@ -30,6 +34,7 @@ import com.patis.wms.android.dto.entity.OperationType;
 import com.patis.wms.android.screen.Initializable;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -43,6 +48,7 @@ import retrofit2.Response;
 public class TransportationActivity extends AppCompatActivity implements Initializable{
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+    private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
 
     private TransportationDTO transportation;
 
@@ -63,6 +69,8 @@ public class TransportationActivity extends AppCompatActivity implements Initial
     private List<RequestDTO> requests;
     private List<TransportCompanyDTO> transCompanies;
 
+    private FloatingActionMenu fam;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +90,23 @@ public class TransportationActivity extends AppCompatActivity implements Initial
         etDateTo = findViewById(R.id.etDateTo);
         etInfo = findViewById(R.id.etInfo);
 
+        fam = findViewById(R.id.fam);
+        com.github.clans.fab.FloatingActionButton fabIn = findViewById(R.id.menu_in);
+
+        fabIn.setOnClickListener(e->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Укажите дату приёма");
+
+            final EditText input = new EditText(this);
+            //input.setInputType(InputType.TYPE_DATETIME_VARIATION_NORMAL);
+            builder.setView(input);
+
+            builder.setPositiveButton("Сохранить", (dialog, which) ->
+                    receiveTransportation(input.getText().toString()));
+            builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        });
 
         content.setVisibility(View.GONE);
         swipeRefresh.setEnabled(true);
@@ -100,6 +125,25 @@ public class TransportationActivity extends AppCompatActivity implements Initial
 
 
 
+    }
+
+    private void receiveTransportation(String dateString){
+        try {
+            Date date = dateTimeFormat.parse(dateString);
+            App.getFromCustomerApi().receiveTransportation(date, transportation.getId()).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+
+                }
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -153,6 +197,8 @@ public class TransportationActivity extends AppCompatActivity implements Initial
             etDateFrom.setEnabled(false);
             etDateTo.setEnabled(false);
             etInfo.setEnabled(false);
+
+            fam.setVisibility(View.VISIBLE);
 
         }
 
