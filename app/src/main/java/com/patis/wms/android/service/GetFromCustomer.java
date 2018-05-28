@@ -19,5 +19,5 @@ public interface GetFromCustomer {
     Call<Void> createTransportation(@Body TransportationCreateDTO transportationCreateDTO);
 
     @POST("getFromCustomer/receiveTransportation/{id_transportation}")
-    Call<Void> receiveTransportation(@Body Date date, @Path("id_transportation") long transportationId);
+    Call<Void> receiveTransportation(@Body String date, @Path("id_transportation") long transportationId);
 }

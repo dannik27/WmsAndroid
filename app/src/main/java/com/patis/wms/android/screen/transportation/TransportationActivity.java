@@ -130,7 +130,8 @@ public class TransportationActivity extends AppCompatActivity implements Initial
     private void receiveTransportation(String dateString){
         try {
             Date date = dateTimeFormat.parse(dateString);
-            App.getFromCustomerApi().receiveTransportation(date, transportation.getId()).enqueue(new Callback<Void>() {
+        //    dateString = "\"" + dateString + "\"";
+            App.getFromCustomerApi().receiveTransportation(dateString, transportation.getId()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
 

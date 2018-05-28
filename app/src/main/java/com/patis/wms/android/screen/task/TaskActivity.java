@@ -94,6 +94,7 @@ public class TaskActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     updateData();
+
                                 }
                                 @Override public void onFailure(Call<Void> call, Throwable t) {}}))
 
