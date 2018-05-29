@@ -3,6 +3,8 @@ package com.patis.wms.android.screen;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import java.io.IOException;
+
 public interface Initializable {
 
 

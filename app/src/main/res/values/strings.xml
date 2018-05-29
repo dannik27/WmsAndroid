@@ -12,4 +12,11 @@
     <string name="title_activity_task">Информация о задаче</string>
     <string name="title_activity_request">Новый запрос</string>
     <string name="title_activity_transportation">Транспортировка</string>
+    <string name="nav_request_title">Заявки на перемещение</string>
+    <string name="nav_transportation_title">Транспортировки</string>
+    <string name="nav_task_title">Задачи</string>
+    <string name="nav_report_title">Отчёты</string>
+    <string name="nav_close_title">Выход</string>
+
+
 </resources>

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.patis.wms.android.dto.WorkerDTO;
 import com.patis.wms.android.screen.login.LoginActivity;
 import com.patis.wms.android.screen.new_request.NewRequestFragment;
+import com.patis.wms.android.screen.report.ReportFragment;
 import com.patis.wms.android.screen.request.RequestListFragment;
 import com.patis.wms.android.screen.task.TaskListFragment;
 import com.patis.wms.android.screen.transportation.TransportationListFragment;
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = TransportationListFragment.class;
         } else if (id == R.id.nav_task) {
             fragmentClass = TaskListFragment.class;
+        } else if (id == R.id.nav_report) {
+            fragmentClass = ReportFragment.class;
         }
 
         try {
