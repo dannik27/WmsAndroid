@@ -134,7 +134,9 @@ public class TransportationActivity extends AppCompatActivity implements Initial
             App.getFromCustomerApi().receiveTransportation(dateString, transportation.getId()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-
+                    transportation.setDateReceived(date);
+                    initializeView(null);
+                    fam.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -199,8 +201,13 @@ public class TransportationActivity extends AppCompatActivity implements Initial
             etDateTo.setEnabled(false);
             etInfo.setEnabled(false);
 
-            fam.setVisibility(View.VISIBLE);
+            if(transportation.getDateReceived() == null){
+                fam.setVisibility(View.VISIBLE);
+            }
 
+        }else{
+            etDateTo.setVisibility(View.GONE);
+            etDateFrom.setVisibility(View.GONE);
         }
 
         invalidateOptionsMenu();

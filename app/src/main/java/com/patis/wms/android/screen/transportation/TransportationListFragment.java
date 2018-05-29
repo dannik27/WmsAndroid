@@ -105,12 +105,14 @@ public class TransportationListFragment extends Fragment {
             public void onResponse(Call<List<TransportationDTO>> call, Response<List<TransportationDTO>> response) {
                 if(response.body() != null){
                     setListContent(response.body());
+                }else{
+                    tvEmpty.setText("Ошибка сервера");
                 }
                 swipeRefresh.setRefreshing(false);
             }
             @Override public void onFailure(Call<List<TransportationDTO>> call, Throwable t) {
                 swipeRefresh.setRefreshing(false);
-
+                tvEmpty.setText("Сервер не отвечает");
             }
         });
     }
