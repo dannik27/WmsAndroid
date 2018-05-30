@@ -65,6 +65,8 @@ public class TransportationActivity extends AppCompatActivity implements Initial
     private EditText etDateTo;
     private EditText etInfo;
 
+    private View blockDateFrom;
+    private View blockDateTo;
 
     private List<RequestDTO> requests;
     private List<TransportCompanyDTO> transCompanies;
@@ -89,6 +91,9 @@ public class TransportationActivity extends AppCompatActivity implements Initial
         etDateFrom = findViewById(R.id.etDateFrom);
         etDateTo = findViewById(R.id.etDateTo);
         etInfo = findViewById(R.id.etInfo);
+
+        blockDateFrom = findViewById(R.id.blockDateFrom);
+        blockDateTo = findViewById(R.id.blockDateTo);
 
         fam = findViewById(R.id.fam);
         com.github.clans.fab.FloatingActionButton fabIn = findViewById(R.id.menu_in);
@@ -206,8 +211,8 @@ public class TransportationActivity extends AppCompatActivity implements Initial
             }
 
         }else{
-            etDateTo.setVisibility(View.GONE);
-            etDateFrom.setVisibility(View.GONE);
+            blockDateFrom.setVisibility(View.GONE);
+            blockDateTo.setVisibility(View.GONE);
         }
 
         invalidateOptionsMenu();
