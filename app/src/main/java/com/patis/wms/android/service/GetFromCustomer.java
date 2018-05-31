@@ -1,5 +1,6 @@
 package com.patis.wms.android.service;
 
+import com.patis.wms.android.dto.DateTimeDTO;
 import com.patis.wms.android.dto.create.RequestCreateDTO;
 import com.patis.wms.android.dto.create.TransportationCreateDTO;
 
@@ -18,6 +19,6 @@ public interface GetFromCustomer {
     @POST("getFromCustomer/createTransportation")
     Call<Void> createTransportation(@Body TransportationCreateDTO transportationCreateDTO);
 
-    @POST("getFromCustomer/receiveTransportation/{id_transportation}")
-    Call<Void> receiveTransportation(@Body String date, @Path("id_transportation") long transportationId);
+    @POST("getFromCustomer/v2/receiveTransportation/{id_transportation}")
+    Call<Void> receiveTransportation(@Body DateTimeDTO date, @Path("id_transportation") long transportationId);
 }

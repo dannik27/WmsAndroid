@@ -20,6 +20,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.patis.wms.android.App;
 import com.patis.wms.android.R;
 import com.patis.wms.android.dto.CustomerDTO;
+import com.patis.wms.android.dto.DateTimeDTO;
 import com.patis.wms.android.dto.PackingListDTO;
 import com.patis.wms.android.dto.RequestDTO;
 import com.patis.wms.android.dto.RequestItemDTO;
@@ -135,8 +136,10 @@ public class TransportationActivity extends AppCompatActivity implements Initial
     private void receiveTransportation(String dateString){
         try {
             Date date = dateTimeFormat.parse(dateString);
+            DateTimeDTO dto = new DateTimeDTO(dateString);
+
         //    dateString = "\"" + dateString + "\"";
-            App.getFromCustomerApi().receiveTransportation(dateString, transportation.getId()).enqueue(new Callback<Void>() {
+            App.getFromCustomerApi().receiveTransportation(dto, transportation.getId()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     transportation.setDateReceived(date);
